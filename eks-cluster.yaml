@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EKS Cluster and VPC'
+
+Parameters:
+  ClusterName:
+    Type: String
+    Default: my-k8s-cluster
+  KubernetesVersion:
+    Type: String
+    Default: "1.29"
+
+Resources:
+  EKSClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: eks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: !Ref ClusterName
+      Version: !Ref KubernetesVersion
+      RoleArn: !GetAtt EKSClusterRole.Arn
+      ResourcesVpcConfig:
+        SubnetIds: 
+          - subnet-03c905d3bf79a1eb5
+          - subnet-01d5e42f0dacde4ec
+        EndpointPublicAccess: true
+
+Outputs:
+  ClusterName:
+    Value: !Ref EKSCluster
+  ClusterEndpoint:
+    Value: !GetAtt EKSCluster.Endpoint
+  ClusterRoleArn:
+    Value: !GetAtt EKSClusterRole.Arn
