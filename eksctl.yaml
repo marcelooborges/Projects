@@ -1,0 +1,17 @@
+# eksctl for EKS k8s cluster creation
+# Opensource tool from weaveworks
+
+eksctl create cluster \
+--name test-cluster-eksctl \
+--version 1.32 \
+--region us-east-1 \
+--nodegroup-name linux-nodes \
+--node-type t2.micro \
+--nodes 2
+
+
+# default values were used
+
+
+
+
